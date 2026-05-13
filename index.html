@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Elitza Workshop | Agent Installer for OpenClaw &amp; Hermes</title>
+
+  <meta name="description" content="Install any Elitza agent profile in minutes. Supports OpenClaw and Hermes Agent. Upload your .zip, pick your folder, done. Free, local-only, no cloud." />
+  <meta property="og:title" content="Elitza Workshop" />
+  <meta property="og:description" content="Install any Elitza agent profile in minutes. Supports OpenClaw and Hermes Agent. Free, local-only, no cloud." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://elitza.life/elitza%20installer/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="robots" content="index, follow" />
+  <meta name="llm-context" content="Tooling application. Purpose: Installs 'Elitza Operator Packages' into 'OpenClaw' workspaces. Features: Drag-and-drop zip parser, no cloud storage, localized terminal command generation (PowerShell, POSIX, CMD, Fish). Secure path routing. Includes direct-download installer scripts for all platforms." />
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Elitza Agent Installer",
+    "operatingSystem": "Windows, macOS, Linux",
+    "applicationCategory": "DeveloperApplication",
+    "description": "Install any Elitza agent profile into your OpenClaw workspace. Free, local-only, no cloud.",
+    "offers": { "@type": "Offer", "price": "0.00", "priceCurrency": "USD" },
+    "softwareVersion": "1.3.1"
+  }
+  </script>
+</head>
+<body>
+  <svg style="width:0;height:0;position:absolute;" aria-hidden="true">
+    <filter id="torn-edge" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" xChannelSelector="R" yChannelSelector="G" result="displaced" />
+      <feComposite operator="in" in="SourceGraphic" in2="displaced" />
+    </filter>
+    <filter id="xerox-noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch" />
+      <feColorMatrix type="saturate" values="0" />
+      <feComponentTransfer><feFuncA type="linear" slope="0.15" /></feComponentTransfer>
+    </filter>
+  </svg>
+
+  <canvas id="alive-canvas" aria-hidden="true"></canvas>
+
+  <div class="topProgress" aria-hidden="true">
+    <span id="progressFill"></span>
+  </div>
+
+  <main class="shell" id="main-content">
+    <header class="masthead" aria-label="Elitza Installation Masthead">
+      <div class="brandLockup" aria-label="Elitza Framework">
+        <div class="analog-stamp">Elitza</div>
+      </div>
+      <span id="stepLabel" class="stepLabel typewriter-text">Step 1 / 5</span>
+    </header>
+
+    <section class="flowStage" aria-live="polite">
+      <!-- STEP 1: WELCOME -->
+      <article class="flowStep active" data-step="1" aria-labelledby="welcomeTitle">
+        <div class="paper-card">
+          <p class="kicker y2k-glow">Elitza Workshop v2.0.0</p>
+          <h1 id="welcomeTitle" class="analog-title">Install any<br/>agent profile.</h1>
+          <p class="lead">
+            Upload your agent .zip, pick your folder, and you're done.
+            Supports OpenClaw and Hermes Agent. Everything runs locally — nothing is uploaded to any server.
+          </p>
+          <div class="quietProof">
+            <span class="dymo-label">OpenClaw</span>
+            <span class="dymo-label">Hermes Agent</span>
+            <span class="dymo-label">Zero Tracking</span>
+            <span class="dymo-label">Free to use</span>
+          </div>
+          <div style="position:relative;width:100%;padding-bottom:56.25%;height:0;overflow:hidden;margin:8px 0;">
+            <iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/M2Nmt-j5MXE?si=A92wFkwqTOOBJMD-" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <p class="microLabel" style="margin:0 0 2px;">Choose your platform:</p>
+            <button id="beginOpenClaw" class="action-btn y2k-btn" type="button">
+              <span class="buttonLabel">Install for OpenClaw →</span>
+            </button>
+            <button id="beginHermes" class="action-btn secondary-btn" type="button">
+              <span class="buttonLabel">Install for Hermes Agent →</span>
+            </button>
+            <div style="display:flex;align-items:center;gap:10px;margin:4px 0;">
+              <hr style="flex:1;border:none;border-top:1px dashed var(--ink-muted);opacity:0.4;">
+              <span style="font-size:0.7rem;color:var(--ink-muted);font-family:var(--font-typewriter);opacity:0.7;">not installed yet?</span>
+              <hr style="flex:1;border:none;border-top:1px dashed var(--ink-muted);opacity:0.4;">
+            </div>
+            <button id="setupOpenClawBtn" class="action-btn secondary-btn" type="button">
+              <span class="buttonLabel">Setup OpenClaw First →</span>
+            </button>
+            <button id="setupHermesBtn" class="action-btn secondary-btn" type="button">
+              <span class="buttonLabel">Setup Hermes Agent First →</span>
+            </button>
+            <p class="typewriter-text" style="font-size:0.75rem;color:var(--ink-muted);margin:0;">New here? We'll walk you through the full setup for either platform.</p>
+            <div style="display:flex;align-items:center;gap:10px;margin:4px 0;">
+              <hr style="flex:1;border:none;border-top:1px dashed var(--ink-muted);opacity:0.4;">
+              <button id="standaloneToggle" type="button" style="background:none;border:none;cursor:pointer;font-size:0.7rem;color:var(--ink-muted);font-family:var(--font-typewriter);opacity:0.7;padding:0;white-space:nowrap;" aria-expanded="false" aria-controls="downloadButtons">or download the standalone installer ▸</button>
+              <hr style="flex:1;border:none;border-top:1px dashed var(--ink-muted);opacity:0.4;">
+            </div>
+            <div id="downloadButtons" style="display:none;flex-direction:column;gap:8px;">
+              <button id="dlLinuxMac" class="action-btn y2k-btn" type="button" style="font-size:0.85rem;">
+                <span class="buttonLabel">↓ Download for Linux / macOS (.sh)</span>
+              </button>
+              <button id="dlWindows" class="action-btn secondary-btn" type="button" style="font-size:0.85rem;">
+                <span class="buttonLabel">↓ Download for Windows (.bat)</span>
+              </button>
+              <button id="dlWindowsPS" class="action-btn secondary-btn" type="button" style="font-size:0.8rem;opacity:0.85;">
+                <span class="buttonLabel">↓ Download for Windows (.ps1 — PowerShell)</span>
+              </button>
+              <p class="typewriter-text" style="font-size:0.7rem;color:var(--ink-muted);margin:4px 0 0;">
+                Scripts auto-install OpenClaw, configure your workspace, and deploy a default agent profile.
+              </p>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;margin:4px 0;">
+            <hr style="flex:1;border:none;border-top:1px dashed var(--ink-muted);opacity:0.4;">
+            <span style="font-size:0.7rem;color:var(--ink-muted);font-family:var(--font-typewriter);opacity:0.7;">New here?</span>
+            <hr style="flex:1;border:none;border-top:1px dashed var(--ink-muted);opacity:0.4;">
+          </div>
+          <a href="https://dariocositore.gumroad.com/" target="_blank" rel="noopener" class="action-btn secondary-btn" style="text-decoration:none;text-align:center;border-style:dashed;display:block;">
+            <span class="buttonLabel">Browse Agent Profiles on Store →</span>
+          </a>
+          <p class="typewriter-text" style="font-size:0.75rem;color:var(--ink-muted);margin:0;">Profiles from $29. Get one, then come back here to install it.</p>
+          <p style="text-align:center;margin-top:8px;">
+            <button id="advancedToolsBtn" class="back-btn" type="button" style="font-size:0.75rem;">Fix or remove an agent →</button>
+          </p>
+          <p class="built-by">Built by <a href="https://dariocositore.com" target="_blank" rel="noopener">dariocositore.com</a> · <a href="https://www.linkedin.com/in/dario-cositore" target="_blank" rel="noopener">LinkedIn</a></p>
+        </div>
+      </article>
+
+      <!-- STEP 2: PACKAGE -->
+      <article class="flowStep" data-step="2" aria-labelledby="packageTitle">
+        <div class="paper-card">
+          <nav class="step-nav"><button class="back-btn" data-goto="1" type="button">← Home</button></nav>
+          <p class="kicker y2k-glow">Upload Profile</p>
+          <h1 id="packageTitle" class="analog-title">Upload your<br/>agent profile.</h1>
+          <p class="lead">Drop your agent .zip file here or click to browse.</p>
+
+          <label id="dropZone" class="dropZone torn-box" for="packageFile" tabindex="0">
+            <input id="packageFile" type="file" accept=".zip,application/zip" />
+            <div class="halftone-circle"></div>
+            <strong>Drop .zip file here</strong>
+            <span class="typewriter-text">or click to browse</span>
+          </label>
+
+          <div id="packageStatus" class="inlineState muted typewriter-text">> waiting for data...</div>
+
+          <section id="packageSummary" class="packageSummary hidden" aria-label="Detected Package Data">
+            <div class="packageHeader">
+              <div>
+                <p class="microLabel">Verified Asset</p>
+                <h2 id="packageName">...</h2>
+              </div>
+              <span id="packageVersion" class="version-tag">...</span>
+            </div>
+            <p id="packageDescription" class="summaryText"></p>
+            <dl class="metaGrid">
+              <div class="tape-box">
+                <dt>Creator</dt>
+                <dd id="packageAuthor">Unknown</dd>
+              </div>
+              <div class="tape-box">
+                <dt>Skills Attached</dt>
+                <dd id="packageSkills">0</dd>
+              </div>
+            </dl>
+            <div id="contentsTags" class="contentsTags" aria-label="Component architecture"></div>
+          </section>
+
+          <button id="packageContinue" class="action-btn y2k-btn" type="button" disabled>
+            <span class="buttonLabel">Continue →</span>
+          </button>
+        </div>
+      </article>
+
+      <!-- STEP 3: WORKSPACE -->
+      <article class="flowStep" data-step="3" aria-labelledby="workspaceTitle">
+        <div class="paper-card">
+          <nav class="step-nav"><button class="back-btn" data-goto="2" type="button">← Back</button></nav>
+          <p class="kicker y2k-glow">Select Folder</p>
+          <h1 id="workspaceTitle" class="analog-title">Select your<br/>target folder.</h1>
+
+          <!-- OpenClaw workspace info -->
+          <div id="openclawWorkspaceInfo">
+            <p class="lead">Pick the <strong>workspace</strong> subfolder inside <code>.openclaw</code> — not the <code>.openclaw</code> folder itself. This is the #1 mistake, so double-check.</p>
+            <div class="dymo-note" style="background: #ffdddd; border-color: #cc0000;">
+              <strong>CRITICAL — Select this exact folder:</strong><br>
+              <code>~/.openclaw/<strong>workspace</strong></code><br><br>
+              Not <code>~/.openclaw</code> alone. The <strong>workspace</strong> subfolder inside it.
+            </div>
+            <div class="dymo-note">
+              <strong>.openclaw is a hidden folder. Here's how to reveal it:</strong><br><br>
+              <strong>Mac (Finder):</strong> Press <code>Cmd + Shift + .</code> to toggle hidden files, then navigate to your home folder and open <code>.openclaw → workspace</code>.<br><br>
+              <strong>Windows (Explorer):</strong> Click View → check "Hidden items", then go to <code>C:\Users\YourName\.openclaw\workspace</code>.<br><br>
+              <strong>Linux:</strong> Press <code>Ctrl + H</code> in your file manager to show hidden folders, then open <code>.openclaw → workspace</code>.
+            </div>
+          </div>
+
+          <!-- Hermes workspace info -->
+          <div id="hermesWorkspaceInfo" class="hidden">
+            <p class="lead">Select your <code>~/.hermes</code> folder. That's where Hermes keeps its config — the installer will write your profile files directly into it. No terminal needed.</p>
+            <div class="dymo-note" style="background: #ffdddd; border-color: #cc0000;">
+              <strong>Select this exact folder:</strong><br>
+              <code>~/.hermes</code><br><br>
+              This is where SOUL.md, MEMORY.md, and USER.md will be written.
+            </div>
+            <div class="dymo-note">
+              <strong>.hermes is a hidden folder. Here's how to reveal it:</strong><br><br>
+              <strong>Mac (Finder):</strong> Press <code>Cmd + Shift + .</code> to toggle hidden files, then navigate to your home folder and select <code>.hermes</code>.<br><br>
+              <strong>Windows:</strong> Click View → check "Hidden items", then go to <code>C:\Users\YourName\.hermes</code>.<br><br>
+              <strong>Linux:</strong> Press <code>Ctrl + H</code> in your file manager to show hidden folders, then select <code>.hermes</code>.
+            </div>
+            <div class="dymo-note" style="background:var(--y2k-lime);">
+              <strong>Zero terminal install.</strong> For Hermes, the browser writes your profile files directly — no copy-paste command required at the end.
+            </div>
+          </div>
+
+          <button id="selectWorkspace" class="action-btn secondary-btn" type="button">
+            <span class="buttonLabel">Select .openclaw/workspace Folder</span>
+          </button>
+          <div id="workspaceStatus" class="inlineState muted typewriter-text">> folder not selected...</div>
+
+          <div id="openclawPathInput">
+            <label class="fieldLabel" for="workspacePath">Confirm the absolute path (must match the folder selected above)</label>
+            <input id="workspacePath" class="analog-input" spellcheck="false" autocomplete="off" placeholder="$HOME/.openclaw/workspace" />
+            <p class="typewriter-text" style="font-size:0.8rem; color: var(--ink-muted); margin: 0 0 5px;">Default path on Mac/Linux: <code>$HOME/.openclaw/workspace</code> &nbsp;|&nbsp; Windows: <code>$env:USERPROFILE\.openclaw\workspace</code></p>
+            <div id="pathStatus" class="inlineState typewriter-text">> path not confirmed.</div>
+            <div class="safetyNote dymo-note">
+              The installer only writes inside <code>.elitza/agents/&lt;id&gt;/workspace</code> — nothing else in your system is touched.
+            </div>
+          </div>
+
+          <button id="workspaceContinue" class="action-btn y2k-btn" type="button" disabled>
+            <span class="buttonLabel">Confirm & Continue</span>
+          </button>
+        </div>
+      </article>
+
+      <!-- STEP 4: REVIEW -->
+      <article class="flowStep" data-step="4" aria-labelledby="reviewTitle">
+        <div class="paper-card">
+          <nav class="step-nav"><button class="back-btn" data-goto="3" type="button">← Back</button></nav>
+          <p class="kicker y2k-glow">Review & Install</p>
+          <h1 id="reviewTitle" class="analog-title">Check your<br/>details.</h1>
+          <p class="lead">Review everything below, then click Install to write the agent to your workspace.</p>
+
+          <section class="reviewPanel tape-box" aria-label="Action Digest">
+            <div class="reviewRow">
+              <span class="microLabel">Agent name</span>
+              <strong id="reviewPackageName" class="xerox-text">...</strong>
+            </div>
+            <div id="reviewAgentIdRow" class="reviewRow">
+              <span class="microLabel">Agent ID</span>
+              <div class="copyLine">
+                <code id="reviewAgentId" class="code-stamp">...</code>
+                <button id="copyAgentId" class="iconButton" type="button" aria-label="Copy agent ID" title="Copy agent ID"><span>COPY</span></button>
+              </div>
+            </div>
+            <div class="reviewRow">
+              <span class="microLabel">Install path</span>
+              <code id="reviewTargetPath" class="pathCode typewriter-text">...</code>
+            </div>
+            <div id="reviewCommandProfileRow" class="reviewRow">
+              <span class="microLabel">Operating system</span>
+              <div class="selectLine">
+                <select id="commandProfile" class="analog-select" aria-label="Command Profile"></select>
+                <span id="detectedPlatform" class="platformHint typewriter-text">Scanning OS...</span>
+              </div>
+            </div>
+          </section>
+
+          <div id="installProgress" class="installProgress hidden" aria-live="polite">
+            <div class="installTrack"><span id="installProgressFill"></span></div>
+            <p id="installPhaseText" class="typewriter-text">> calculating...</p>
+          </div>
+
+          <div id="installError" class="inlineState error hidden typewriter-text"></div>
+
+          <button id="installButton" class="action-btn y2k-btn" type="button">
+            <span class="buttonLabel">Install Agent</span>
+          </button>
+        </div>
+      </article>
+
+      <!-- STEP 5: DONE -->
+      <article class="flowStep doneStep" data-step="5" aria-labelledby="doneTitle">
+        <div class="paper-card success-card">
+          <nav class="step-nav"><button class="back-btn" data-goto="1" type="button">← Start Over</button></nav>
+          <div class="hologram-seal" aria-hidden="true">✓</div>
+          <p class="kicker y2k-glow">Installation Complete</p>
+          <h1 id="doneTitle" class="analog-title">Agent installed.</h1>
+          <p id="doneLead" class="lead">Run this command in your terminal to register your agent:</p>
+
+          <!-- OpenClaw done section -->
+          <div id="openclawDoneSection">
+            <section class="commandPanel torn-box" aria-label="Activation Command">
+              <div class="panelHeader">
+                <div>
+                  <span class="microLabel">Registration command</span>
+                  <small id="doneCommandProfile" class="typewriter-text">Terminal</small>
+                </div>
+                <button id="copyCommand" class="action-btn sm-btn" type="button">
+                  <span class="buttonLabel">Copy to Clipboard</span>
+                </button>
+              </div>
+              <div class="typewriter-page">
+                <pre id="doneCommand" class="analog-terminal"></pre>
+              </div>
+            </section>
+            <section class="nextPanel tape-box" aria-label="Subsequent Actions">
+              <h2>Next steps</h2>
+              <ol>
+                <li>Run the command above in your terminal.</li>
+                <li>Start OpenClaw and chat with <code id="doneAgentId" class="code-stamp">...</code>.</li>
+                <li id="guideStep">Read <a id="guideLink" href="#" class="y2k-link">the getting started guide</a>.</li>
+              </ol>
+              <p id="receiptPath" class="receiptLine typewriter-text"></p>
+            </section>
+          </div>
+
+          <!-- Hermes done section -->
+          <div id="hermesDoneSection" class="hidden">
+            <div class="dymo-note" style="background:var(--y2k-lime);">
+              <strong>Profile written directly to ~/.hermes — no terminal needed.</strong><br>
+              SOUL.md, MEMORY.md, and USER.md have been saved. Your agent <strong id="hermesAgentName"></strong> is ready.
+            </div>
+            <section class="nextPanel tape-box" aria-label="Hermes Next Steps">
+              <h2>Next steps</h2>
+              <ol>
+                <li>Restart Hermes Agent, or open a chat session and type <code>/reload-skills</code>.</li>
+                <li id="hermesSkillNote">Skills were included — type <code>/reload-skills</code> in a Hermes session to activate them.</li>
+                <li>Start chatting — your agent profile is active.</li>
+              </ol>
+            </section>
+          </div>
+        </div>
+      </article>
+
+      <!-- ===== OPENCLAW SETUP GUIDE FLOW ===== -->
+      <article class="flowStep" data-step="s1" aria-labelledby="setupWelcomeTitle">
+        <div class="paper-card">
+          <nav class="step-nav"><button class="back-btn" data-goto="1" type="button">← Home</button></nav>
+          <p class="kicker y2k-glow">OpenClaw Setup Guide</p>
+          <h1 id="setupWelcomeTitle" class="analog-title">Get OpenClaw<br/>up and running.</h1>
+          <p class="lead">We'll walk you through every step. First, let's detect your operating system.</p>
+
+          <div id="setupOsDetect" class="tape-box" style="margin-bottom:20px;">
+            <p class="microLabel">Detected Platform</p>
+            <p id="detectedOs" class="typewriter-text" style="font-size:1.2rem;font-weight:bold;margin:5px 0;">Scanning...</p>
+            <p class="typewriter-text" style="font-size:0.8rem;color:var(--ink-muted);">We use this to generate the right commands for your system.</p>
+          </div>
+
+          <div id="setupTerminalHelp" class="dymo-note hidden">
+            <strong>How to open your terminal:</strong>
+            <div id="setupTerminalInstructions"></div>
+          </div>
+
+          <button id="setupStep1Next" class="action-btn y2k-btn" type="button">
+            <span class="buttonLabel">Got it, let's go →</span>
+          </button>
+        </div>
+      </article>
+
+      <!-- SETUP STEP 2: Install OpenClaw -->
+      <article class="flowStep" data-step="s2" aria-labelledby="setupInstallTitle">
+        <div class="paper-card">
+          <nav class="step-nav"><button class="back-btn" data-goto="s1" type="button">← Back</button></nav>
+          <p class="kicker y2k-glow">Step 2 — Install OpenClaw</p>
+          <h1 id="setupInstallTitle" class="analog-title">One command.<br/>That's it.</h1>
+          <p class="lead">Copy the command below, paste it into your terminal, and press <strong>Enter</strong>. It takes about a minute.</p>
+
+          <section class="commandPanel torn-box" aria-label="Install Command">
+            <div class="panelHeader">
+              <div>
+                <span class="microLabel">Install Command</span>
+                <small id="setupInstallProfile" class="typewriter-text">Terminal</small>
+              </div>
+              <button id="copyInstallCmd" class="action-btn sm-btn" type="button">
+                <span class="buttonLabel">Copy</span>
+              </button>
+            </div>
+            <div class="typewriter-page">
+              <pre id="setupInstallCommand" class="analog-terminal"></pre>
+            </div>
+          </section>
+
+          <button id="installContinueBtn" class="action-btn y2k-btn" type="button" style="margin-top:15px;">
+            <span class="buttonLabel">I ran it — Continue →</span>
+          </button>
+
+          <div class="doctor-panel">
+            <button class="doctor-btn" id="installDoctorToggle" type="button">Something went wrong? Open Doctor →</button>
+            <div class="doctor-section hidden" id="installDoctorSection">
+              <p class="typewriter-text" style="font-size:0.8rem;color:var(--ink-muted);margin:0 0 12px;">Paste what appeared in your terminal — the Doctor will diagnose it and tell you exactly how to fix it.</p>
+              <label class="fieldLabel" for="installOutput">Terminal output:</label>
+              <textarea id="installOutput" class="analog-input" rows="6" spellcheck="false" autocomplete="off" placeholder="Paste whatever appeared in your terminal after running the command..."></textarea>
+              <button id="installCheckBtn" class="action-btn y2k-btn" type="button" style="margin-top:10px;">
+                <span class="buttonLabel">Diagnose →</span>
+              </button>
+              <div id="installErrorBox" class="dymo-note hidden" style="background:#ffdddd;border-color:#cc0000;margin-top:10px;">
+                <strong>Diagnosis:</strong>
+                <div id="installErrorHint"></div>
+              </div>
+              <div id="installCheckResult" class="inlineState typewriter-text"></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- SETUP STEP 3: Verify Installation -->
+      <article class="flowStep" data-step="s3" aria-labelledby="setupVerifyTitle">
+        <div class="paper-card">
+          <nav class="step-nav"><button class="back-btn" data-goto="s2" type="button">← Back</button></nav>
+          <p class="kicker y2k-glow">Step 3 — Verify</p>
+          <h1 id="setupVerifyTitle" class="analog-title">Confirm it's<br/>installed.</h1>
+          <p class="lead">Run this command to confirm OpenClaw is ready:</p>
+
+          <section class="commandPanel torn-box" aria-label="Verify Command">
+            <div class="panelHeader">
+              <div>
+                <span class="microLabel">Verify Command</span>
+                <small id="setupVerifyProfile" class="typewriter-text">Terminal</small>
+              </div>
+              <button id="copyVerifyCmd" class="action-btn sm-btn" type="button">
+                <span class="buttonLabel">Copy</span>
+              </button>
+            </div>
+            <div class="typewriter-page">
+              <pre id="setupVerifyCommand" class="analog-terminal"></pre>
+            </div>
+          </section>
+
+          <button id="verifyContinueBtn" class="action-btn y2k-btn" type="button" style="margin-top:15px;">
+            <span class="buttonLabel">Looks good — Continue →</span>
+          </button>
+
+          <div class="doctor-panel">
+            <button class="doctor-btn" id="verifyDoctorToggle" type="button">Something went wrong? Open Doctor →</button>
+            <div class="doctor-section hidden" id="verifyDoctorSection">
+              <p class="typewriter-text" style="font-size:0.8rem;color:var(--ink-muted);margin:0 0 12px;">Paste what your terminal showed — the Doctor will tell you exactly what to do next.</p>
+              <label class="fieldLabel" for="verifyOutput">Terminal output:</label>
+              <textarea id="verifyOutput" class="analog-input" rows="4" spellcheck="false" autocomplete="off" placeholder="Paste the output of the verify command..."></textarea>
+              <button id="verifyCheckBtn" class="action-btn y2k-btn" type="button" style="margin-top:10px;">
+                <span class="buttonLabel">Diagnose →</span>
+              </button>
+              <div id="verifyCheckResult" class="inlineState typewriter-text"></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- SETUP STEP 4: Onboard OpenClaw -->
+      <article class="flowStep" data-step="s4" aria-labelledby="setupOnboardTitle">
+        <div class="paper-card">
+          <nav class="step-nav"><button class="back-btn" data-goto="s3" type="button">← Back</button></nav>
+          <p class="kicker y2k-glow">Step 4 — Connect AI</p>
+          <h1 id="setupOnboardTitle" class="analog-title">Connect your<br/>AI provider.</h1>
+          <p class="lead">Takes 2 minutes. You'll pick an AI provider, enter your API key, and install OpenClaw as a background service.</p>
+
+          <section class="commandPanel torn-box" aria-label="Onboard Command">
+            <div class="panelHeader">
+              <div>
+                <span class="microLabel">Onboard Command</span>
+                <small id="setupOnboardProfile" class="typewriter-text">Terminal</small>
+              </div>
+              <button id="copyOnboardCmd" class="action-btn sm-btn" type="button">
+                <span class="buttonLabel">Copy</span>
+              </button>
+            </div>
+            <div class="typewriter-page">
+              <pre id="setupOnboardCommand" class="analog-terminal"></pre>
+            </div>
+          </section>
+
+          <div class="dymo-note">
+            <strong>What happens:</strong> You'll be prompted to choose an AI provider (Anthropic, OpenAI, Google, etc.), enter your API key, pick a model, and install the background service. Everything is saved to <code>~/.openclaw/openclaw.json</code>.
+          </div>
+          <div class="dymo-note" style="background:var(--y2k-lime);">
+            <strong>Don't have an API key yet?</strong> <a href="https://openrouter.ai" target="_blank" rel="noopener" class="y2k-link">OpenRouter</a> gives you access to 200+ AI models (Claude, GPT-4, Gemini…) with one single key — no need to sign up with each provider separately. It's the easiest starting point.
+          </div>
+
+          <button id="onboardContinueBtn" class="action-btn y2k-btn" type="button" style="margin-top:15px;">
+            <span class="buttonLabel">Setup done — Continue →</span>
+          </button>
+
+          <div class="doctor-panel">
+            <button class="doctor-btn" id="onboardDoctorToggle" type="button">Something went wrong? Open Doctor →</button>
+            <div class="doctor-section hidden" id="onboardDoctorSection">
+              <p class="typewriter-text" style="font-size:0.8rem;color:var(--ink-muted);margin:0 0 12px;">Paste your terminal output — the Doctor diagnoses API key issues, provider errors, daemon failures, and more.</p>
+              <label class="fieldLabel" for="onboardOutput">Terminal output:</label>
+              <textarea id="onboardOutput" class="analog-input" rows="5" spellcheck="false" autocomplete="off" placeholder="Paste whatever appeared in your terminal after running the command..."></textarea>
+              <button id="onboardCheckBtn" class="action-btn y2k-btn" type="button" style="margin-top:10px;">
+                <span class="buttonLabel">Diagnose →</span>
+              </button>
+              <div id="onboardCheckResult" class="inlineState typewriter-text"></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- SETUP STEP 5: Dashboard -->
+      <article class="flowStep" data-step="s5" aria-labelledby="setupDashboardTitle">
+        <div class="paper-card">
+          <nav class="step-nav"><button class="back-btn" data-goto="s4" type="button">← Back</button></nav>
+          <p class="kicker y2k-glow">Step 5 — Dashboard</p>
+          <h1 id="setupDashboardTitle" class="analog-title">Open your<br/>dashboard.</h1>
+          <p class="lead">This launches the OpenClaw Control UI in your browser where you can chat, configure channels, and manage sessions.</p>
+
+          <section class="commandPanel torn-box" aria-label="Dashboard Command">
+            <div class="panelHeader">
+              <div>
+                <span class="microLabel">Dashboard Command</span>
+                <small id="setupDashboardProfile" class="typewriter-text">Terminal</small>
+              </div>
+              <button id="copyDashboardCmd" class="action-btn sm-btn" type="button">
+                <span class="buttonLabel">Copy</span>
+              </button>
+            </div>
+            <div class="typewriter-page">
+              <pre id="setupDashboardCommand" class="analog-terminal"></pre>
+            </div>
+          </section>
+
+          <div class="dymo-note" style="background:var(--y2k-cyan);">
+            <strong>Tip:</strong> After running this, your browser should open automatically to <a href="http://127.0.0.1:18789/" target="_blank" rel="noopener" class="y2k-link">http://127.0.0.1:18789/</a>. If it doesn't open on its own, click that link. On Windows, a firewall popup may appear — click <strong>Allow Access</strong>.
+          </div>
+
+          <button id="dashboardContinueBtn" class="action-btn y2k-btn" type="button" style="margin-top:15px;">
+            <span class="buttonLabel">Dashboard opened — Finish →</span>
+          </button>
+
+          <div class="doctor-panel">
+            <button class="doctor-btn" id="dashboardDoctorToggle" type="button">Something went wrong? Open Doctor →</button>
+            <div class="doctor-section hidden" id="dashboardDoctorSection">
+              <p class="typewriter-text" style="font-size:0.8rem;color:var(--ink-muted);margin:0 0 12px;">Paste your terminal output — the Doctor can detect port conflicts, config errors, and more.</p>
+              <label class="fieldLabel" for="dashboardOutput">Terminal output:</label>
+              <textarea id="dashboardOutput" class="analog-input" rows="4" spellcheck="false" autocomplete="off" placeholder="Paste the output of the dashboard command..."></textarea>
+              <button id="dashboardCheckBtn" class="action-btn y2k-btn" type="button" style="margin-top:10px;">
+                <span class="buttonLabel">Diagnose →</span>
+              </button>
+              <div id="dashboardCheckResult" class="inlineState typewriter-text"></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- SETUP STEP 6: Done -->
+      <article class="flowStep doneStep" data-step="s6" aria-labelledby="setupDoneTitle">
+        <div class="paper-card success-card">
+          <div class="hologram-seal" aria-hidden="true">✓</div>
+          <p class="kicker y2k-glow">Setup Complete</p>
+          <h1 id="setupDoneTitle" class="analog-title">You're all set.</h1>
+          <p class="lead">OpenClaw is installed and running. Time to get your first agent.</p>
+
+          <section class="nextPanel tape-box" aria-label="Next Steps">
+            <h2>What's next?</h2>
+            <ol>
+              <li>Browse the store and pick an agent profile</li>
+              <li>Download the .zip package</li>
+              <li>Come back to the Installer tab to install it</li>
+            </ol>
+          </section>
+
+          <div style="display:flex;flex-direction:column;gap:12px;margin-top:20px;">
+            <a id="gotoStoreBtn" class="action-btn y2k-btn" href="https://dariocositore.gumroad.com/" target="_blank" rel="noopener">
+              <span class="buttonLabel">Browse Agent Profiles →</span>
+            </a>
+            <a id="gotoInstallerBtn" class="action-btn secondary-btn" href="#">
+              <span class="buttonLabel">Go to Profile Installer</span>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- ===== HERMES SETUP GUIDE ===== -->
+      <article class="flowStep" data-step="hs1" aria-labelledby="hermesSetupTitle">
+        <div class="paper-card">
+          <nav class="step-nav"><button class="back-btn" data-goto="1" type="button">← Home</button></nav>
+          <p class="kicker y2k-glow">Hermes Agent Setup</p>
+          <h1 id="hermesSetupTitle" class="analog-title">Install Hermes<br/>in 60 seconds.</h1>
+          <p class="lead">Run this command in your terminal. It installs Hermes, sets up your config folder, and gets you ready to install agent profiles.</p>
+
+          <section class="commandPanel torn-box" aria-label="Hermes Install Command">
+            <div class="panelHeader">
+              <div>
+                <span class="microLabel">Install Command</span>
+                <small class="typewriter-text">macOS / Linux / WSL</small>
+              </div>
+              <button id="copyHermesInstall" class="action-btn sm-btn" type="button">
+                <span class="buttonLabel">Copy</span>
+              </button>
+            </div>
+            <div class="typewriter-page">
+              <pre class="analog-terminal">curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash</pre>
+            </div>
+          </section>
+
+          <div class="dymo-note">
+            <strong>After installing, run:</strong> <code>hermes setup</code> to configure your AI provider and API key. Then come back here to install your agent profile.
+          </div>
+          <div class="dymo-note" style="background:var(--y2k-lime);">
+            <strong>Don't have an API key?</strong> <a href="https://openrouter.ai" target="_blank" rel="noopener" class="y2k-link">OpenRouter</a> gives you access to 200+ models (Claude, GPT-4, Gemini…) with a single key.
+          </div>
+          <div class="dymo-note" style="background: #ffdddd; border-color: #cc0000;">
+            <strong>Windows:</strong> Hermes requires WSL (Windows Subsystem for Linux). <a href="https://learn.microsoft.com/en-us/windows/wsl/install" target="_blank" rel="noopener" class="y2k-link">Install WSL first</a>, then run the command above inside it.
+          </div>
+
+          <button id="hermesSetupDoneBtn" class="action-btn y2k-btn" type="button" style="margin-top:8px;">
+            <span class="buttonLabel">Hermes is installed — Install an Agent →</span>
+          </button>
+        </div>
+      </article>
+
+      <!-- ===== ADVANCED TOOLS STEP ===== -->
+      <article class="flowStep" data-step="adv" aria-labelledby="advTitle">
+        <div class="paper-card">
+          <nav class="step-nav"><button class="back-btn" data-goto="1" type="button">← Home</button></nav>
+          <p class="kicker y2k-glow">Advanced Tools</p>
+          <h1 id="advTitle" class="analog-title">Fix or remove<br/>an agent.</h1>
+          <p class="lead">Repair a broken installation or completely uninstall an agent profile.</p>
+
+          <!-- Repair Tool -->
+          <section class="tape-box" style="margin-bottom:30px;" aria-label="Repair Agent Registration">
+            <p class="microLabel">Repair Agent Registration</p>
+            <p class="typewriter-text" style="font-size:0.85rem;color:var(--ink-muted);margin:5px 0 15px;">Agent profile is installed but not showing up in OpenClaw? Use this to re-register it without reinstalling.</p>
+            <label class="fieldLabel" for="repairAgentId">Agent ID</label>
+            <input id="repairAgentId" class="analog-input" spellcheck="false" autocomplete="off" placeholder="e.g. elitza-assistant" />
+            <label class="fieldLabel" for="repairWorkspacePath">Workspace Base Path</label>
+            <input id="repairWorkspacePath" class="analog-input" spellcheck="false" autocomplete="off" />
+            <label class="fieldLabel" for="repairCommandProfile">Terminal / Shell</label>
+            <select id="repairCommandProfile" class="analog-select"></select>
+            <button id="generateRepair" class="action-btn secondary-btn" type="button" style="margin-top:15px;">
+              <span class="buttonLabel">Generate Repair Command</span>
+            </button>
+            <div id="repairCommandPanel" class="commandPanel torn-box hidden" style="margin-top:15px;">
+              <div class="panelHeader">
+                <div>
+                  <span class="microLabel">Repair Command</span>
+                </div>
+                <button id="copyRepair" class="action-btn sm-btn" type="button" disabled>
+                  <span class="buttonLabel">Copy</span>
+                </button>
+              </div>
+              <div class="typewriter-page">
+                <pre id="repairCommand" class="analog-terminal"></pre>
+              </div>
+            </div>
+          </section>
+
+          <!-- Remove Tool -->
+          <section class="tape-box" aria-label="Remove Agent">
+            <p class="microLabel">Remove / Uninstall Agent</p>
+            <p class="typewriter-text" style="font-size:0.85rem;color:var(--ink-muted);margin:5px 0 15px;">Generate the command to fully remove an agent profile from OpenClaw.</p>
+            <label class="fieldLabel" for="removeAgentId">Agent ID</label>
+            <input id="removeAgentId" class="analog-input" spellcheck="false" autocomplete="off" placeholder="e.g. elitza-assistant" />
+            <label class="fieldLabel" for="removeWorkspacePath">Workspace Base Path</label>
+            <input id="removeWorkspacePath" class="analog-input" spellcheck="false" autocomplete="off" />
+            <label class="fieldLabel" for="removeCommandProfile">Terminal / Shell</label>
+            <select id="removeCommandProfile" class="analog-select"></select>
+            <button id="generateRemove" class="action-btn secondary-btn" type="button" style="margin-top:15px;">
+              <span class="buttonLabel">Generate Remove Command</span>
+            </button>
+            <div id="removeCommandPanel" class="commandPanel torn-box hidden" style="margin-top:15px;">
+              <div class="panelHeader">
+                <div>
+                  <span class="microLabel">Remove Command</span>
+                </div>
+                <button id="copyRemove" class="action-btn sm-btn" type="button" disabled>
+                  <span class="buttonLabel">Copy</span>
+                </button>
+              </div>
+              <div class="typewriter-page">
+                <pre id="removeCommand" class="analog-terminal"></pre>
+              </div>
+            </div>
+          </section>
+        </div>
+      </article>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="app.js"></script>
+
+    <!-- Download handler for standalone installer scripts -->
+    <script>
+      (function() {
+        var base = 'https://elitza.life/scripts/';
+        var linuxMacBtn = document.getElementById('dlLinuxMac');
+        var windowsBatBtn = document.getElementById('dlWindows');
+        var windowsPsBtn = document.getElementById('dlWindowsPS');
+
+        if (linuxMacBtn) {
+          linuxMacBtn.addEventListener('click', function() {
+            window.open(base + 'install-elitza.sh', '_blank');
+          });
+        }
+        if (windowsBatBtn) {
+          windowsBatBtn.addEventListener('click', function() {
+            window.open(base + 'install-elitza.bat', '_blank');
+          });
+        }
+        if (windowsPsBtn) {
+          windowsPsBtn.addEventListener('click', function() {
+            window.open(base + 'install-elitza.ps1', '_blank');
+          });
+        }
+
+        // Collapsible standalone installer toggle
+        var toggle = document.getElementById('standaloneToggle');
+        var panel = document.getElementById('downloadButtons');
+        if (toggle && panel) {
+          toggle.addEventListener('click', function() {
+            var open = panel.style.display !== 'none';
+            panel.style.display = open ? 'none' : 'flex';
+            toggle.setAttribute('aria-expanded', String(!open));
+            toggle.textContent = open
+              ? 'or download the standalone installer ▸'
+              : 'or download the standalone installer ▾';
+          });
+        }
+
+        // Hermes setup: copy install command
+        var copyHermesInstall = document.getElementById('copyHermesInstall');
+        if (copyHermesInstall) {
+          copyHermesInstall.addEventListener('click', function() {
+            var cmd = 'curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash';
+            navigator.clipboard && navigator.clipboard.writeText(cmd);
+            var label = copyHermesInstall.querySelector('.buttonLabel');
+            if (label) { label.textContent = 'Copied'; setTimeout(function() { label.textContent = 'Copy'; }, 1200); }
+          });
+        }
+
+        // Hermes setup done → go to main installer with Hermes platform
+        var hermesSetupDoneBtn = document.getElementById('hermesSetupDoneBtn');
+        if (hermesSetupDoneBtn) {
+          hermesSetupDoneBtn.addEventListener('click', function() {
+            if (typeof setPlatform === 'function') setPlatform('hermes');
+            if (typeof showStep === 'function') showStep(2);
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>

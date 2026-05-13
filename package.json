@@ -1,0 +1,9 @@
+{
+  "name": "elitza-workshop",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Elitza Workshop — unified installer and agent hub for OpenClaw and Hermes Agent. Browse, buy, and install Elitza agent profiles with minimal terminal friction.",
+  "scripts": {
+    "serve": "python -m http.server 4173"
+  }
+}

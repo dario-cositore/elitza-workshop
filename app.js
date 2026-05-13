@@ -759,6 +759,9 @@ async function handlePackageFile(file) {
 function renderWorkspaceReadiness() {
   if (targetPlatform === 'hermes') {
     $("workspaceContinue").disabled = !workspaceHandle;
+    if (workspaceHandle) {
+      setInlineState("workspaceStatus", `> Linked: ${workspaceHandle.name} — ready to write`, "success");
+    }
     return;
   }
   let pathIsValid = false;
@@ -1025,7 +1028,10 @@ function bindMainFlow() {
   $("workspaceContinue").addEventListener("click", async () => {
     await withButtonLoading($("workspaceContinue"), "Processing...", async () => {
       try { renderReview(); await delay(160); showStep(4); }
-      catch (err) { setInlineState("pathStatus", `> Fault: ${humanError(err)}`, "error"); }
+      catch (err) {
+        const statusId = targetPlatform === 'hermes' ? "workspaceStatus" : "pathStatus";
+        setInlineState(statusId, `> Fault: ${humanError(err)}`, "error");
+      }
     });
   });
 
